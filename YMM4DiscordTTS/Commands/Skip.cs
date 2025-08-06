@@ -1,5 +1,4 @@
 ﻿using Discord.Interactions;
-using YMM4DiscordTTS.View;
 using YMM4DiscordTTS.ViewModel;
 
 namespace YMM4DiscordTTS.Commands

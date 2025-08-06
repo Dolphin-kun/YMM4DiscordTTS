@@ -51,9 +51,9 @@
                             </TextBox>
 
                             <PasswordBox x:Name="TokenPasswordBox"
-                 Grid.Column="0"
-                 VerticalContentAlignment="Center"
-                 PasswordChanged="TokenPasswordBox_PasswordChanged">
+                                         Grid.Column="0"
+                                         VerticalContentAlignment="Center"
+                                         PasswordChanged="TokenPasswordBox_PasswordChanged">
                                 <PasswordBox.Style>
                                     <Style TargetType="PasswordBox">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -176,15 +176,21 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Header="メッセージの送信" Margin="0,15,0,0">
+                <GroupBox Header="手動読み上げ" Padding="10">
                     <StackPanel>
                         <TextBlock Text="メッセージ:" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding MessageToSend, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="0,0,0,10" 
-                                 AcceptsReturn="True" 
-                                 Height="40"/>
-                        <Button Content="送信" HorizontalAlignment="Left" Width="100" Margin="0,0,0,15" 
-                                Command="{Binding SendMessageCommand}"/>
+                        <TextBox Text="{Binding TextToRead, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,0,10"
+                                 AcceptsReturn="True"
+                                 MinHeight="40"
+                                 MaxHeight="120"
+                                 VerticalScrollBarVisibility="Auto"
+                                 PreviewKeyDown="TextBox_PreviewKeyDown">
+                            <TextBox.InputBindings>
+                                <KeyBinding Modifiers="Ctrl" Key="Enter" Command="{Binding ReadAloudCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button Content="読み上げ" HorizontalAlignment="Left" Width="100" Command="{Binding ReadAloudCommand}"/>
                     </StackPanel>
                 </GroupBox>
 

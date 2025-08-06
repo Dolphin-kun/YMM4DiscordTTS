@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using YMM4DiscordTTS.ViewModel;
 
 namespace YMM4DiscordTTS.View
@@ -24,6 +25,23 @@ namespace YMM4DiscordTTS.View
                 parentWindow.Title = "YMM4 Discord読み上げ";
             }
         }
+
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+
+                if (DataContext is ToolControlViewModel viewModel)
+                {
+                    if (viewModel.ReadAloudCommand.CanExecute(null))
+                    {
+                        viewModel.ReadAloudCommand.Execute(null);
+                    }
+                }
+            }
+        }
+
 
         private void TokenPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
