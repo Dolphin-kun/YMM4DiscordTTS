@@ -44,7 +44,7 @@ namespace YMM4DiscordTTS.View
                 parentWindow.Title = "YMM4 Discord読み上げ";
             }
 
-            if (TTSSettings.Default.IsCheckVersion && await GetVersion.CheckVersionAsync("YMM4DiscordTTS"))
+            if (TTSSettings.Default.IsCheckVersion && await GetVersion.CheckVersionAsync("YMM4Discord読み上げ"))
             {
                 string url =
                     "https://ymm4-info.net/";

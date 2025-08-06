@@ -10,7 +10,7 @@ namespace YMM4DiscordTTS.Settings
     internal class TTSSettings : SettingsBase<TTSSettings>
     {
         public override SettingsCategory Category => SettingsCategory.None;
-        public override string Name => "YMM4DisocrdTTS";
+        public override string Name => "YMM4Discord読み上げ";
 
         public override bool HasSettingView => true;
         public override object? SettingView => new PluginSettings();
