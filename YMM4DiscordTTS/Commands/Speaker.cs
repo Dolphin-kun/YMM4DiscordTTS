@@ -15,7 +15,7 @@ namespace YMM4DiscordTTS.Commands
         {
             SetSpeakerForUser(Context.User.Id, speakerId);
 
-            var speakerName = ToolSettings.Default.AvailableSpeakers.FirstOrDefault(s => s.Id == speakerId)?.Name ?? "不明な話者";
+            var speakerName = TTSSettings.Default.AvailableSpeakers.FirstOrDefault(s => s.Id == speakerId)?.Name ?? "不明な話者";
             await RespondAsync($"読み上げ話者を「{speakerName}」に設定しました。", ephemeral: true);
         }
 
@@ -29,14 +29,14 @@ namespace YMM4DiscordTTS.Commands
 
         public static void SetSpeakerForUser(ulong userId, int speakerId)
         {
-            var settings = ToolSettings.Default;
+            var settings = TTSSettings.Default;
             settings.UserVoiceMappings[userId] = speakerId;
             settings.Save();
         }
 
         public static void ResetSpeakerForUser(ulong userId)
         {
-            var settings = ToolSettings.Default;
+            var settings = TTSSettings.Default;
             if (settings.UserVoiceMappings.TryRemove(userId, out _))
             {
                 settings.Save();
@@ -47,10 +47,10 @@ namespace YMM4DiscordTTS.Commands
         {
             if (userId == 0)
             {
-                return ToolSettings.Default.SpeakerId;
+                return TTSSettings.Default.SpeakerId;
             }
 
-            var settings = ToolSettings.Default;
+            var settings = TTSSettings.Default;
             return settings.UserVoiceMappings.TryGetValue(userId, out var speakerId)
                 ? speakerId
                 : settings.SpeakerId;
@@ -64,7 +64,7 @@ namespace YMM4DiscordTTS.Commands
             try
             {
                 var userInput = autocompleteInteraction.Data.Current.Value?.ToString() ?? string.Empty;
-                var allSpeakers = ToolSettings.Default.AvailableSpeakers;
+                var allSpeakers = TTSSettings.Default.AvailableSpeakers;
                 IEnumerable<AutocompleteResult> suggestions;
                 if (!string.IsNullOrEmpty(userInput))
                 {

@@ -131,7 +131,7 @@ namespace YMM4DiscordTTS.ViewModel
             DiscordService.Instance.UserVoiceStateUpdated += OnUserVoiceStateUpdated;
             DiscordService.Instance.DisconnectedFromVoice += OnDisconnectedFromVoice;
 
-            Token = ToolSettings.Default.Token ?? "";
+            Token = TTSSettings.Default.Token ?? "";
             _ = InitializeAsync();
         }
 
@@ -174,8 +174,8 @@ namespace YMM4DiscordTTS.ViewModel
                 MessageBox.Show("トークンが空です。");
                 return;
             }
-            ToolSettings.Default.Token = Token;
-            ToolSettings.Default.Save();
+            TTSSettings.Default.Token = Token;
+            TTSSettings.Default.Save();
             await ConnectToDiscordAsync(Token);
         }
 
@@ -288,7 +288,7 @@ namespace YMM4DiscordTTS.ViewModel
 
             var userName = (user as SocketGuildUser)?.DisplayName ?? user.GlobalName ?? user.Username;
 
-            if (ToolSettings.Default.IsJoinAnnouncement && before.VoiceChannel is null && after.VoiceChannel is not null)
+            if (TTSSettings.Default.IsJoinAnnouncement && before.VoiceChannel is null && after.VoiceChannel is not null)
             {
                 if (_currentVoiceChannel != null && after.VoiceChannel.Id == _currentVoiceChannel.Id)
                 {
@@ -296,7 +296,7 @@ namespace YMM4DiscordTTS.ViewModel
                 }
             }
 
-            if (ToolSettings.Default.IsLeaveAnnouncement && before.VoiceChannel is not null && after.VoiceChannel is null)
+            if (TTSSettings.Default.IsLeaveAnnouncement && before.VoiceChannel is not null && after.VoiceChannel is null)
             {
                 if (_currentVoiceChannel != null && before.VoiceChannel.Id == _currentVoiceChannel.Id)
                 {
@@ -322,7 +322,7 @@ namespace YMM4DiscordTTS.ViewModel
                 var speakers = await _ttsOrchestrator.GetAvailableSpeakersAsync();
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    var settings = ToolSettings.Default;
+                    var settings = TTSSettings.Default;
                     if (speakers != null && speakers.Count != 0)
                     {
                         var currentId = settings.SpeakerId;

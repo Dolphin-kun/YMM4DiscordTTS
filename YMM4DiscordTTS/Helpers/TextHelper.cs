@@ -6,7 +6,7 @@ namespace YMM4DiscordTTS.Helpers
     public static class TextHelper
     {
         private const string UrlPattern = @"https?://[^\s]+";
-        private static int MaxLength => ToolSettings.Default.MaxTextLength;
+        private static int MaxLength => TTSSettings.Default.MaxTextLength;
 
         public static string ProcessForTTS(string originalText)
         {
@@ -18,7 +18,7 @@ namespace YMM4DiscordTTS.Helpers
             string processedText = originalText;
 
             // 辞書リストの各項目について、単語の置換を行う
-            foreach (var entry in ToolSettings.Default.DictionaryEntries)
+            foreach (var entry in TTSSettings.Default.DictionaryEntries)
             {
                 if (!string.IsNullOrEmpty(entry.Before))
                 {

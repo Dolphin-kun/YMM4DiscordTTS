@@ -178,7 +178,7 @@
 
                 <GroupBox Header="読み上げ設定" Padding="0" Margin="0,15,0,0">
                     <StackPanel Margin="5">
-                        <settings:ToolSettingsView/>
+                        <settings:TTSSettingsView/>
                     </StackPanel>
                 </GroupBox>
 

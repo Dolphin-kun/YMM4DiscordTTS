@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="YMM4DiscordTTS.Settings.ToolSettingsView"
+﻿<UserControl x:Class="YMM4DiscordTTS.Settings.TTSSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,17 +14,17 @@
 
                     <Label Content="話者" />
                     <ComboBox x:Name="SpeakerComboBox" 
-                              ItemsSource="{Binding Source={x:Static local:ToolSettings.Default}, Path=AvailableSpeakers}"
+                              ItemsSource="{Binding Source={x:Static local:TTSSettings.Default}, Path=AvailableSpeakers}"
                               DisplayMemberPath="Name" 
                               SelectedValuePath="Id"
-                              SelectedValue="{Binding Source={x:Static local:ToolSettings.Default}, Path=SpeakerId}"
+                              SelectedValue="{Binding Source={x:Static local:TTSSettings.Default}, Path=SpeakerId}"
                               HorizontalAlignment="Right" 
                               MinWidth="200"/>
                 </Grid>
                 <Grid>
                     <Label Content="読み上げスピード"/>
-                    <c:TextBoxSlider Value="{Binding Source={x:Static local:ToolSettings.Default},Path=NormalSpeed}" 
-                                     DefaultValue="{Binding Source={x:Static local:ToolSettings.Default},Path=NormalSpeed}" 
+                    <c:TextBoxSlider Value="{Binding Source={x:Static local:TTSSettings.Default},Path=NormalSpeed}" 
+                                     DefaultValue="{Binding Source={x:Static local:TTSSettings.Default},Path=NormalSpeed}" 
                                      StringFormat="F1" 
                                      Unit=""
                                      Min="0.5"
@@ -36,7 +36,7 @@
                 <Grid>
 
                     <Label Content="最大文字数" />
-                    <c:TextEditor Text="{Binding Source={x:Static local:ToolSettings.Default}, Path=MaxTextLength}"
+                    <c:TextEditor Text="{Binding Source={x:Static local:TTSSettings.Default}, Path=MaxTextLength}"
                                   AcceptsReturn="False"
                                   HorizontalAlignment="Right"
                                   Width="200"/>
@@ -46,11 +46,11 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Label Content="参加時"/>
-                            <c:ToggleSlider Value="{Binding Source={x:Static local:ToolSettings.Default}, Path=IsJoinAnnouncement}"/>
+                            <c:ToggleSlider Value="{Binding Source={x:Static local:TTSSettings.Default}, Path=IsJoinAnnouncement}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Label Content="退出時"/>
-                            <c:ToggleSlider Value="{Binding Source={x:Static local:ToolSettings.Default}, Path=IsLeaveAnnouncement}"/>
+                            <c:ToggleSlider Value="{Binding Source={x:Static local:TTSSettings.Default}, Path=IsLeaveAnnouncement}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -58,7 +58,7 @@
         </Expander>
         <Expander Header="辞書設定" IsExpanded="True">
             <StackPanel>
-                <DataGrid ItemsSource="{Binding Source={x:Static local:ToolSettings.Default}, Path=DictionaryEntries}"
+                <DataGrid ItemsSource="{Binding Source={x:Static local:TTSSettings.Default}, Path=DictionaryEntries}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           HeadersVisibility="Column"

@@ -78,9 +78,9 @@ namespace YMM4DiscordTTS.Services
                 if (_ttsQueue.TryDequeue(out var request))
                 {
                     _isMessageSkipRequested = false;
-                    float normalSpeed = ToolSettings.Default.NormalSpeed;
+                    float normalSpeed = TTSSettings.Default.NormalSpeed;
                     float fastSpeed = normalSpeed * 1.5f;
-                    int longTextThreshold = ToolSettings.Default.LongTextThreshold;
+                    int longTextThreshold = TTSSettings.Default.LongTextThreshold;
 
                     string processedText = TextHelper.ProcessForTTS(request.Text);
                     float currentSpeed = request.Text.Length >= longTextThreshold ? fastSpeed : normalSpeed;

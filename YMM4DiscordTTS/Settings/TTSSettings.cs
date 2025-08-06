@@ -7,13 +7,13 @@ using YukkuriMovieMaker.Plugin;
 
 namespace YMM4DiscordTTS.Settings
 {
-    internal class ToolSettings : SettingsBase<ToolSettings>
+    internal class TTSSettings : SettingsBase<TTSSettings>
     {
         public override SettingsCategory Category => SettingsCategory.None;
         public override string Name => "YMM4DisocrdTTS";
 
         public override bool HasSettingView => true;
-        public override object? SettingView => new ToolSettingsView();
+        public override object? SettingView => new PluginSettings();
 
         public string Token { get => token; set => Set(ref token, value); }
         private string token = "";
@@ -23,6 +23,10 @@ namespace YMM4DiscordTTS.Settings
 
         public ConcurrentDictionary<ulong, int> UserVoiceMappings { get => userVoiceMappings; set => Set(ref userVoiceMappings, value); }
         private ConcurrentDictionary<ulong, int> userVoiceMappings = new();
+
+        //バージョンチェック
+        public bool IsCheckVersion { get => isCheckVersion; set => Set(ref isCheckVersion, value); }
+        private bool isCheckVersion = true;
 
         //読み上げ設定
         public float NormalSpeed { get => normalSpeed; set => Set(ref normalSpeed, value); }

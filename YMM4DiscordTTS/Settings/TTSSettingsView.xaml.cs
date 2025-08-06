@@ -4,23 +4,23 @@ using System.Windows.Controls;
 
 namespace YMM4DiscordTTS.Settings
 {
-    public partial class ToolSettingsView : UserControl
+    public partial class TTSSettingsView : UserControl
     {
-        public ToolSettingsView()
+        public TTSSettingsView()
         {
             InitializeComponent();
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            ToolSettings.Default.DictionaryEntries.Add(new DictionaryEntry { Before = "", After = "" });
+            TTSSettings.Default.DictionaryEntries.Add(new DictionaryEntry { Before = "", After = "" });
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as FrameworkElement)?.DataContext is DictionaryEntry entry)
             {
-                ToolSettings.Default.DictionaryEntries.Remove(entry);
+                TTSSettings.Default.DictionaryEntries.Remove(entry);
             }
         }
     }
