@@ -110,12 +110,28 @@ namespace YMM4DiscordTTS.ViewModel
             get => _selectedVoiceChannel;
             set { if (_selectedVoiceChannel != value) { _selectedVoiceChannel = value; OnPropertyChanged(); } }
         }
+
+        private string _textToRead = "";
+        public string TextToRead
+        {
+            get => _textToRead;
+            set
+            {
+                if (_textToRead != value)
+                {
+                    _textToRead = value;
+                    OnPropertyChanged();
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
+        }
         #endregion
 
         public ICommand LoginCommand { get; }
         public ICommand JoinVoiceChannelCommand { get; }
         public ICommand LeaveVoiceChannelCommand { get; }
         public ICommand SkipPlaybackCommand { get; }
+        public ICommand ReadAloudCommand { get; }
 
         private ToolControlViewModel()
         {
@@ -125,6 +141,7 @@ namespace YMM4DiscordTTS.ViewModel
             JoinVoiceChannelCommand = new RelayCommand(async _ => await ExecuteJoinVoiceChannelAsync(), _ => CanExecuteJoinVoiceChannel());
             LeaveVoiceChannelCommand = new RelayCommand(async _ => await ExecuteLeaveVoiceChannelAsync(), _ => IsConnectedToVoice);
             SkipPlaybackCommand = new RelayCommand(_ => _ttsOrchestrator.Skip());
+            ReadAloudCommand = new RelayCommand(_ => ExecuteReadAloud(), _ => CanExecuteReadAloud());
 
             DiscordService.Instance.Ready += OnDiscordReady;
             DiscordService.Instance.MessageReceived += OnDiscordMessageReceived;
@@ -142,12 +159,11 @@ namespace YMM4DiscordTTS.ViewModel
             if (TTSSettings.Default.IsCheckVersion && await GetVersion.CheckVersionAsync("YMM4Discord読み上げ"))
             {
                 string url =
-                    "https://ymm4-info.net/";
+                    "https://ymm4-info.net/ymme/YMM4Discord%E8%AA%AD%E3%81%BF%E4%B8%8A%E3%81%92%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3";
                 var result = MessageBox.Show(
                     $"新しいバージョンがあります。\n\n最新バージョンを確認しますか？\nOKを押すと配布サイトが開きます。\n{url}",
                     "YMM4Discord読み上げプラグイン",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Information);
+                    MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
@@ -227,6 +243,25 @@ namespace YMM4DiscordTTS.ViewModel
         private static async Task ExecuteLeaveVoiceChannelAsync()
         {
             await DiscordService.Instance.LeaveVoiceChannelAsync();
+        }
+
+        private bool CanExecuteReadAloud()
+        {
+            return IsConnectedToVoice && !string.IsNullOrWhiteSpace(TextToRead);
+        }
+
+        private void ExecuteReadAloud()
+        {
+            if (!CanExecuteReadAloud()) return;
+
+            try
+            {
+                _ttsOrchestrator.EnqueueText(0, TextToRead);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"読み上げの追加に失敗しました: {ex.Message}");
+            }
         }
 
         private async Task ConnectToDiscordAsync(string token)
@@ -363,9 +398,8 @@ namespace YMM4DiscordTTS.ViewModel
                     }
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"話者リストの取得に失敗しました: {ex.Message}");
                 MessageBox.Show("VOICEVOXエンジンから話者リストを取得できませんでした。VOICEVOXが起動しているか確認してください。");
             }
         }

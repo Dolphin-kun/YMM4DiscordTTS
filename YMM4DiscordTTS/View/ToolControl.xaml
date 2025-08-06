@@ -84,10 +84,10 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ToggleButton">
                                                     <Border x:Name="border"
-                            Background="Transparent"
-                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                            BorderThickness="1"
-                            CornerRadius="1">
+                                                            Background="Transparent"
+                                                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="1">
                                                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
@@ -173,6 +173,24 @@
                                     Command="{Binding LeaveVoiceChannelCommand}" 
                                     IsEnabled="{Binding IsConnectedToVoice}"/>
                         </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="手動読み上げ" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="メッセージ:" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding TextToRead, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,0,10"
+                                 AcceptsReturn="True"
+                                 MinHeight="40"
+                                 MaxHeight="120"
+                                 VerticalScrollBarVisibility="Auto"
+                                 PreviewKeyDown="TextBox_PreviewKeyDown">
+                            <TextBox.InputBindings>
+                                <KeyBinding Modifiers="Ctrl" Key="Enter" Command="{Binding ReadAloudCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button Content="読み上げ" HorizontalAlignment="Left" Width="100" Command="{Binding ReadAloudCommand}"/>
                     </StackPanel>
                 </GroupBox>
 
