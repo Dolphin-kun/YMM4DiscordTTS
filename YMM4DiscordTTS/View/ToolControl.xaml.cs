@@ -18,50 +18,12 @@ namespace YMM4DiscordTTS.View
             this.Loaded += ToolControl_Loaded;
         }
 
-        private async void ToolControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                await InitializeAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"初期化中にエラーが発生しました: {ex.Message}");
-                MessageBox.Show(
-                    "初期化中にエラーが発生しました。\n" + ex.Message,
-                    "エラー",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-            }
-        }
-
-        private async Task InitializeAsync()
+        private void ToolControl_Loaded(object sender, RoutedEventArgs e)
         {
             var parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
             {
                 parentWindow.Title = "YMM4 Discord読み上げ";
-            }
-
-            if (TTSSettings.Default.IsCheckVersion && await GetVersion.CheckVersionAsync("YMM4Discord読み上げ"))
-            {
-                string url =
-                    "https://ymm4-info.net/";
-                var result = MessageBox.Show(
-                    $"新しいバージョンがあります。\n\n最新バージョンを確認しますか？\nOKを押すと配布サイトが開きます。\n{url}",
-                    "YMM4エクスプローラープラグイン",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Information);
-
-                if (result == MessageBoxResult.OK)
-                {
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = url,
-                        UseShellExecute = true
-                    });
-                }
             }
         }
 

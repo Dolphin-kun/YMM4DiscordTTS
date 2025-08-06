@@ -139,6 +139,25 @@ namespace YMM4DiscordTTS.ViewModel
 
         private async Task InitializeAsync()
         {
+            if (TTSSettings.Default.IsCheckVersion && await GetVersion.CheckVersionAsync("YMM4Discord読み上げ"))
+            {
+                string url =
+                    "https://ymm4-info.net/";
+                var result = MessageBox.Show(
+                    $"新しいバージョンがあります。\n\n最新バージョンを確認しますか？\nOKを押すと配布サイトが開きます。\n{url}",
+                    "YMM4Discord読み上げプラグイン",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+                }
+            }
             VoiceVoxProcessManager.Instance.StartEngineIfNotRunning();
 
             const int maxRetries = 5;
