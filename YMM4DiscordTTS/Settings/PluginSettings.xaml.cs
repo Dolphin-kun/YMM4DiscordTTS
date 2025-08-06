@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace YMM4DiscordTTS.Settings
 {
@@ -14,7 +13,7 @@ namespace YMM4DiscordTTS.Settings
 
             try
             {
-                VersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "取得エラー";
+                VersionTextBlock.Text = GetVersion.GetPluginVersion();
             }
             catch
             {

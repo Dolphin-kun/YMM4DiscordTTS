@@ -126,7 +126,6 @@ namespace YMM4DiscordTTS.ViewModel
             LeaveVoiceChannelCommand = new RelayCommand(async _ => await ExecuteLeaveVoiceChannelAsync(), _ => IsConnectedToVoice);
             SkipPlaybackCommand = new RelayCommand(_ => _ttsOrchestrator.Skip());
 
-            DiscordService.Instance.Log += OnLogReceived;
             DiscordService.Instance.Ready += OnDiscordReady;
             DiscordService.Instance.MessageReceived += OnDiscordMessageReceived;
             DiscordService.Instance.UserVoiceStateUpdated += OnUserVoiceStateUpdated;
@@ -147,7 +146,8 @@ namespace YMM4DiscordTTS.ViewModel
                 var result = MessageBox.Show(
                     $"新しいバージョンがあります。\n\n最新バージョンを確認しますか？\nOKを押すと配布サイトが開きます。\n{url}",
                     "YMM4Discord読み上げプラグイン",
-                    MessageBoxButton.OKCancel);
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Information);
 
                 if (result == MessageBoxResult.OK)
                 {
@@ -160,13 +160,30 @@ namespace YMM4DiscordTTS.ViewModel
             }
             VoiceVoxProcessManager.Instance.StartEngineIfNotRunning();
 
-            if (!string.IsNullOrWhiteSpace(Token))
+            const int maxRetries = 5;
+            for (int i = 0; i < maxRetries; i++)
             {
-                await ConnectToDiscordAsync(Token);
+                try
+                {
+                    await LoadSpeakersAsync();
+
+                    if (!string.IsNullOrWhiteSpace(Token))
+                    {
+                        await ConnectToDiscordAsync(Token);
+                    }
+
+                    return;
+                }
+                catch (Exception)
+                {
+                    if (i < maxRetries - 1)
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
             }
 
-            await LoadSpeakersAsync();
-
+            MessageBox.Show("VOICEVOXエンジンの起動に失敗しました。");
         }
 
         private async Task ExecuteLoginAsync()
@@ -176,6 +193,8 @@ namespace YMM4DiscordTTS.ViewModel
                 MessageBox.Show("トークンが空です。");
                 return;
             }
+            TTSSettings.Default.Token = Token;
+            TTSSettings.Default.Save();
             await ConnectToDiscordAsync(Token);
         }
 
@@ -219,6 +238,7 @@ namespace YMM4DiscordTTS.ViewModel
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"ログイン失敗: {ex.Message}");
                 IsLoggedIn = false;
                 MessageBox.Show($"Discordへのログインに失敗しました: {ex.Message}");
             }
@@ -235,15 +255,15 @@ namespace YMM4DiscordTTS.ViewModel
 
             var botUser = guild.CurrentUser;
             var sortedTextChannels = guild.TextChannels
-                .Where(c =>
-                {
-                    if (c.ChannelType is not (ChannelType.Text or ChannelType.Voice)) return false;
-                    var perms = botUser.GetPermissions(c);
-                    return perms.Has(ChannelPermission.ViewChannel) && perms.Has(ChannelPermission.SendMessages);
-                })
-                .OrderBy(c => c.Category?.Position ?? -1)
-                .ThenBy(c => c.Position)
-                .ToList();
+        .Where(c =>
+        {
+            if (c.ChannelType is not (ChannelType.Text or ChannelType.Voice)) return false;
+            var perms = botUser.GetPermissions(c);
+            return perms.Has(ChannelPermission.ViewChannel) && perms.Has(ChannelPermission.SendMessages);
+        })
+        .OrderBy(c => c.Category?.Position ?? -1)
+        .ThenBy(c => c.Position)
+        .ToList();
             TextChannels = new ObservableCollection<SocketTextChannel>(sortedTextChannels);
 
             var sortedVoiceChannels = guild.VoiceChannels
@@ -256,24 +276,6 @@ namespace YMM4DiscordTTS.ViewModel
                 .ThenBy(c => c.Position)
                 .ToList();
             VoiceChannels = new ObservableCollection<SocketVoiceChannel>(sortedVoiceChannels);
-        }
-
-        private async Task OnLogReceived(LogMessage msg)
-        {
-            if (msg.Exception is Discord.Net.HttpException httpEx &&
-                httpEx.HttpCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                await Application.Current.Dispatcher.Invoke(async() =>
-                {
-                    MessageBox.Show("Discordへのログインに失敗しました。\nトークンが無効です。設定を確認してください。");
-
-                    Token = string.Empty;
-                    IsLoggedIn = false;
-
-                    await DiscordService.Instance.LogoutAndStopAsync();
-                });
-            }
-
         }
 
         private Task OnDiscordReady()
@@ -361,8 +363,9 @@ namespace YMM4DiscordTTS.ViewModel
                     }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine($"話者リストの取得に失敗しました: {ex.Message}");
                 MessageBox.Show("VOICEVOXエンジンから話者リストを取得できませんでした。VOICEVOXが起動しているか確認してください。");
             }
         }

@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using System.Windows;
-using YMM4DiscordTTS.Settings;
 
 namespace YMM4DiscordTTS.Services
 {
@@ -17,38 +15,14 @@ namespace YMM4DiscordTTS.Services
             var processes = Process.GetProcessesByName("run");
             if (processes.Length != 0)
             {
+                Debug.WriteLine("VoiceVoxエンジンはすでに起動しています。");
                 _voiceVoxProcess = processes[0];
                 return;
             }
 
             try
             {
-                string enginePath = TTSSettings.Default.VoiceVoxPath;
-                if (string.IsNullOrEmpty(enginePath) && !File.Exists(enginePath))
-                {
-                    string startupPath = AppDomain.CurrentDomain.BaseDirectory;
-                    string targetDir = @"user\resources\VOICEVOX\";
-                    string fullSearchPath = Path.Combine(startupPath, targetDir);
-
-                    if (!Directory.Exists(fullSearchPath))
-                    {
-                        MessageBox.Show($"VOICEVOXのディレクトリが見つかりませんでした。\n指定されたパスにフォルダが存在するか確認してください。\n\n検索パス: {fullSearchPath}");
-                        return;
-                    }
-
-                    string[] foundFiles = Directory.GetFiles(fullSearchPath, "run.exe", SearchOption.AllDirectories);
-
-                    if (foundFiles.Length == 0)
-                    {
-                        MessageBox.Show($"VOICEVOXの実行ファイル(run.exe)が見つかりませんでした。\n検索パス: {fullSearchPath}");
-                        return;
-                    }
-
-                    enginePath = foundFiles[0];
-
-                    TTSSettings.Default.VoiceVoxPath = enginePath;
-                }
-
+                string enginePath = @"user\resources\VOICEVOX\windows-directml\run.exe";
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = enginePath,
@@ -56,10 +30,12 @@ namespace YMM4DiscordTTS.Services
                     UseShellExecute = false
                 };
                 _voiceVoxProcess = Process.Start(startInfo);
+                Debug.WriteLine("VoiceVoxエンジンを起動しました。");
             }
             catch (Exception ex)
             {
                 MessageBox.Show("VoiceVoxエンジンの起動に失敗しました: " + ex.Message);
+                Debug.WriteLine("VoiceVoxエンジン起動エラー: " + ex);
             }
         }
 
@@ -72,11 +48,12 @@ namespace YMM4DiscordTTS.Services
                     _voiceVoxProcess.Kill(true);
                     _voiceVoxProcess.Dispose();
                     _voiceVoxProcess = null;
+                    Debug.WriteLine("VoiceVoxエンジンを終了しました。");
                 }
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine("VoiceVoxエンジンの終了に失敗しました: " + ex);
+                Debug.WriteLine("VoiceVoxエンジンの終了に失敗しました: " + ex);
             }
         }
     }

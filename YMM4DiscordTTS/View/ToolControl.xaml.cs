@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
+using YMM4DiscordTTS.Settings;
 using YMM4DiscordTTS.ViewModel;
 
 namespace YMM4DiscordTTS.View

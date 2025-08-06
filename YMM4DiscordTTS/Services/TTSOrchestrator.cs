@@ -63,6 +63,7 @@ namespace YMM4DiscordTTS.Services
             _isMessageSkipRequested = true;
             _ttsQueue.Clear();
             _audioQueue.Clear();
+            Debug.WriteLine("スキップが要求されました。");
         }
 
         public async Task<List<VoiceVoxSpeaker>> GetAvailableSpeakersAsync()

@@ -24,6 +24,7 @@ namespace YMM4DiscordTTS.Services
                     cancellationToken.ThrowIfCancellationRequested();
                     await stream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                 }
+                Debug.WriteLine("[PlayVoice] Readした");
             }
             finally
             {

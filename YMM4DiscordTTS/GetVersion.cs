@@ -31,7 +31,7 @@ namespace YMM4DiscordTTS
             }
             catch (Exception ex)
             {
-                //Debug.WriteLine($"[GetVersion] バージョン取得失敗: {ex.Message}");
+                Debug.WriteLine($"[GetVersion] バージョン取得失敗: {ex.Message}");
                 return null;
             }
 

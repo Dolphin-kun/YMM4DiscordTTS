@@ -14,9 +14,9 @@
                     <Grid>
                         <Label Content="現在のバージョン" VerticalAlignment="Center"/>
                         <TextBlock x:Name="VersionTextBlock"
-                                   HorizontalAlignment="Right" 
-                                   VerticalAlignment="Center"
-                                   Opacity="0.7"/>
+                   HorizontalAlignment="Right" 
+                   VerticalAlignment="Center"
+                   Opacity="0.7"/>
                     </Grid>
 
                     <Grid>
@@ -26,17 +26,7 @@
                 </StackPanel>
             </GroupBox>
         </Expander>
-        <Expander Header="エンジン設定" IsExpanded="True">
-            <StackPanel>
-                <Grid>
-                    <Label Content="VOICEVOXエンジン"/>
-                    <c:FileSelector Filter="run.exe"
-                                    Value="{Binding Source={x:Static local:TTSSettings.Default},Path=VoiceVoxPath}" 
-                                    HorizontalAlignment="Right"
-                                    Width="200"/>
-                </Grid>
-            </StackPanel>
-        </Expander>
+
         <local:TTSSettingsView/>
     </StackPanel>
 </UserControl>

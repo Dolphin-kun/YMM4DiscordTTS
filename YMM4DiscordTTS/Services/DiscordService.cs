@@ -3,7 +3,6 @@ using Discord.Audio;
 using Discord.Interactions;
 using Discord.WebSocket;
 using System.Reflection;
-using System.Windows;
 
 namespace YMM4DiscordTTS.Services
 {
@@ -20,11 +19,6 @@ namespace YMM4DiscordTTS.Services
         public event Func<Task>? Ready;
         public event Func<SocketUser, SocketVoiceState, SocketVoiceState, Task>? UserVoiceStateUpdated;
         public event Func<Task>? DisconnectedFromVoice;
-        public event Func<LogMessage, Task> Log
-        {
-            add => _client.Log += value;
-            remove => _client.Log -= value;
-        }
 
         public SocketSelfUser CurrentUser => _client.CurrentUser;
         public IReadOnlyCollection<SocketGuild> Guilds => _client.Guilds;
@@ -37,6 +31,7 @@ namespace YMM4DiscordTTS.Services
             });
             _interactionService = new InteractionService(_client.Rest);
 
+            _client.Log += msg => { System.Diagnostics.Debug.WriteLine(msg); return Task.CompletedTask; };
             _client.Ready += OnClientReady;
             _client.MessageReceived += OnMessageReceived;
             _client.InteractionCreated += OnInteractionCreated;
@@ -47,12 +42,6 @@ namespace YMM4DiscordTTS.Services
         {
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
-        }
-
-        public async Task LogoutAndStopAsync()
-        {
-            await _client.LogoutAsync();
-            await _client.StopAsync();
         }
 
         public async Task JoinVoiceChannelAsync(IVoiceChannel channel)
@@ -115,17 +104,17 @@ namespace YMM4DiscordTTS.Services
 
                     if (existingCommands.Count != commandsToRegister.Count)
                     {
-                        //System.Diagnostics.Debug.WriteLine($"{guild.Name} ({guild.Id}) にコマンドを登録します。");
+                        System.Diagnostics.Debug.WriteLine($"{guild.Name} ({guild.Id}) にコマンドを登録します。");
                         await _interactionService.RegisterCommandsToGuildAsync(guild.Id);
                     }
                     else
                     {
-                        //System.Diagnostics.Debug.WriteLine($"{guild.Name} ({guild.Id}) のコマンドは最新です。");
+                        System.Diagnostics.Debug.WriteLine($"{guild.Name} ({guild.Id}) のコマンドは最新です。");
                     }
                 }
                 catch (Exception ex)
                 {
-                    //System.Diagnostics.Debug.WriteLine($"{guild.Name} へのコマンド登録に失敗しました: {ex}");
+                    System.Diagnostics.Debug.WriteLine($"{guild.Name} へのコマンド登録に失敗しました: {ex}");
                 }
             }
             Ready?.Invoke();
