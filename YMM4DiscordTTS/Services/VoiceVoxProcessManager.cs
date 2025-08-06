@@ -5,9 +5,8 @@ namespace YMM4DiscordTTS.Services
 {
     public class VoiceVoxProcessManager
     {
-         public static VoiceVoxProcessManager Instance { get; } = new VoiceVoxProcessManager();
+        public static VoiceVoxProcessManager Instance { get; } = new VoiceVoxProcessManager();
 
-        // 外部からnewできないようにコンストラクタをprivateにする
         private VoiceVoxProcessManager() { }
         private Process? _voiceVoxProcess;
 
@@ -23,8 +22,7 @@ namespace YMM4DiscordTTS.Services
 
             try
             {
-                // TODO: パスは設定ファイルなどから取得できるようにするとより良い
-                string enginePath = @"user\resources\VOICEVOX\windows-directml\run.exe"; 
+                string enginePath = @"user\resources\VOICEVOX\windows-directml\run.exe";
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = enginePath,

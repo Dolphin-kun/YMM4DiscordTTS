@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using YMM4DiscordTTS.ViewModel;
 
 namespace YMM4DiscordTTS.View
@@ -9,13 +10,25 @@ namespace YMM4DiscordTTS.View
         {
             InitializeComponent();
 
-            this.DataContext = ToolViewModel.Instance;
-            TokenPasswordBox.Password = ToolViewModel.Instance.Token;
+            this.DataContext = ToolControlViewModel.Instance;
+            TokenPasswordBox.Password = ToolControlViewModel.Instance.Token;
+
+            this.Loaded += ToolControl_Loaded;
+        }
+
+        private void ToolControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var parentWindow = Window.GetWindow(this);
+
+            if (parentWindow != null)
+            {
+                parentWindow.Title = "YMM4 Discord読み上げ";
+            }
         }
 
         private void TokenPasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
         {
-            ToolViewModel.Instance.Token = TokenPasswordBox.Password;
+            ToolControlViewModel.Instance.Token = TokenPasswordBox.Password;
         }
     }
 }

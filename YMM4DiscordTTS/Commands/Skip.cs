@@ -9,9 +9,9 @@ namespace YMM4DiscordTTS.Commands
         [SlashCommand("skip", "現在再生中の音声と、キューに溜まっている読み上げをすべてスキップします")]
         public async Task Skip()
         {
-            if(ToolViewModel.Instance is not null)
+            if(ToolControlViewModel.Instance is not null)
             {
-                ToolViewModel.Instance.SkipPlayback();
+                ToolControlViewModel.Instance.SkipPlayback();
                 await RespondAsync("読み上げをスキップしました。", ephemeral: false);
             }
             else

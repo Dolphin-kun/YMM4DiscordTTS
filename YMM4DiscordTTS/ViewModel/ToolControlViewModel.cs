@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Discord;
@@ -14,7 +11,7 @@ using YMM4DiscordTTS.Settings;
 
 namespace YMM4DiscordTTS.ViewModel
 {
-    public class ToolViewModel : INotifyPropertyChanged
+    public class ToolControlViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -22,7 +19,7 @@ namespace YMM4DiscordTTS.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static ToolViewModel Instance { get; } = new ToolViewModel();
+        public static ToolControlViewModel Instance { get; } = new ToolControlViewModel();
 
         private readonly TTSOrchestrator _ttsOrchestrator;
         private SocketVoiceChannel? _currentVoiceChannel;
@@ -120,7 +117,7 @@ namespace YMM4DiscordTTS.ViewModel
         public ICommand LeaveVoiceChannelCommand { get; }
         public ICommand SkipPlaybackCommand { get; }
 
-        private ToolViewModel()
+        private ToolControlViewModel()
         {
             _ttsOrchestrator = new TTSOrchestrator();
 
@@ -143,12 +140,31 @@ namespace YMM4DiscordTTS.ViewModel
         private async Task InitializeAsync()
         {
             VoiceVoxProcessManager.Instance.StartEngineIfNotRunning();
-            await LoadSpeakersAsync();
 
-            if (!string.IsNullOrWhiteSpace(Token))
+            const int maxRetries = 5;
+            for (int i = 0; i < maxRetries; i++)
             {
-                await ConnectToDiscordAsync(Token);
+                try
+                {
+                    await LoadSpeakersAsync();
+
+                    if (!string.IsNullOrWhiteSpace(Token))
+                    {
+                        await ConnectToDiscordAsync(Token);
+                    }
+
+                    return;
+                }
+                catch (Exception)
+                {
+                    if (i < maxRetries - 1)
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
             }
+
+            MessageBox.Show("VOICEVOXエンジンの起動に失敗しました。");
         }
 
         private async Task ExecuteLoginAsync()
