@@ -111,15 +111,15 @@ namespace YMM4DiscordTTS.ViewModel
             set { if (_selectedVoiceChannel != value) { _selectedVoiceChannel = value; OnPropertyChanged(); } }
         }
 
-        private string _textToRead = "";
-        public string TextToRead
+        private string _messageToSend = "";
+        public string MessageToSend
         {
-            get => _textToRead;
+            get => _messageToSend;
             set
             {
-                if (_textToRead != value)
+                if (_messageToSend != value)
                 {
-                    _textToRead = value;
+                    _messageToSend = value;
                     OnPropertyChanged();
                     CommandManager.InvalidateRequerySuggested();
                 }
@@ -131,7 +131,7 @@ namespace YMM4DiscordTTS.ViewModel
         public ICommand JoinVoiceChannelCommand { get; }
         public ICommand LeaveVoiceChannelCommand { get; }
         public ICommand SkipPlaybackCommand { get; }
-        public ICommand ReadAloudCommand { get; }
+        public ICommand SendMessageCommand { get; }
 
         private ToolControlViewModel()
         {
@@ -141,7 +141,7 @@ namespace YMM4DiscordTTS.ViewModel
             JoinVoiceChannelCommand = new RelayCommand(async _ => await ExecuteJoinVoiceChannelAsync(), _ => CanExecuteJoinVoiceChannel());
             LeaveVoiceChannelCommand = new RelayCommand(async _ => await ExecuteLeaveVoiceChannelAsync(), _ => IsConnectedToVoice);
             SkipPlaybackCommand = new RelayCommand(_ => _ttsOrchestrator.Skip());
-            ReadAloudCommand = new RelayCommand(_ => ExecuteReadAloud(), _ => CanExecuteReadAloud());
+            SendMessageCommand = new RelayCommand(async _ => await ExecuteSendMessageAsync(), _ => CanExecuteSendMessage());
 
             DiscordService.Instance.Ready += OnDiscordReady;
             DiscordService.Instance.MessageReceived += OnDiscordMessageReceived;
@@ -159,7 +159,7 @@ namespace YMM4DiscordTTS.ViewModel
             if (TTSSettings.Default.IsCheckVersion && await GetVersion.CheckVersionAsync("YMM4Discord読み上げ"))
             {
                 string url =
-                    "https://ymm4-info.net/ymme/YMM4Discord%E8%AA%AD%E3%81%BF%E4%B8%8A%E3%81%92%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3";
+                    "https://ymm4-info.net/";
                 var result = MessageBox.Show(
                     $"新しいバージョンがあります。\n\n最新バージョンを確認しますか？\nOKを押すと配布サイトが開きます。\n{url}",
                     "YMM4Discord読み上げプラグイン",
@@ -245,22 +245,24 @@ namespace YMM4DiscordTTS.ViewModel
             await DiscordService.Instance.LeaveVoiceChannelAsync();
         }
 
-        private bool CanExecuteReadAloud()
+        private bool CanExecuteSendMessage()
         {
-            return IsConnectedToVoice && !string.IsNullOrWhiteSpace(TextToRead);
+            return IsLoggedIn &&
+                   SelectedTextChannel != null &&
+                   !string.IsNullOrWhiteSpace(MessageToSend);
         }
 
-        private void ExecuteReadAloud()
+        private async Task ExecuteSendMessageAsync()
         {
-            if (!CanExecuteReadAloud()) return;
+            if (!CanExecuteSendMessage() || SelectedTextChannel is null) return;
 
             try
             {
-                _ttsOrchestrator.EnqueueText(0, TextToRead);
+                await SelectedTextChannel.SendMessageAsync(MessageToSend);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"読み上げの追加に失敗しました: {ex.Message}");
+                MessageBox.Show($"メッセージの送信に失敗しました: {ex.Message}");
             }
         }
 

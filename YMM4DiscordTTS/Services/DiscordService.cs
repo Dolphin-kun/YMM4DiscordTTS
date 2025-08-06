@@ -3,6 +3,7 @@ using Discord.Audio;
 using Discord.Interactions;
 using Discord.WebSocket;
 using System.Reflection;
+using System.Windows;
 
 namespace YMM4DiscordTTS.Services
 {
