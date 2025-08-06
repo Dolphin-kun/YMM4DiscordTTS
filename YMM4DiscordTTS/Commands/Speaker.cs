@@ -81,7 +81,6 @@ namespace YMM4DiscordTTS.Commands
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"話者リストの自動補完エラー: {ex.Message}");
                 return Task.FromResult(AutocompletionResult.FromError(ex));
             }
         }

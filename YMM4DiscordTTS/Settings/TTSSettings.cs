@@ -28,6 +28,10 @@ namespace YMM4DiscordTTS.Settings
         public bool IsCheckVersion { get => isCheckVersion; set => Set(ref isCheckVersion, value); }
         private bool isCheckVersion = true;
 
+        //音声設定
+        public string VoiceVoxPath { get => voiceVoxPath; set => Set(ref voiceVoxPath, value); }
+        private string voiceVoxPath = "";
+
         //読み上げ設定
         public float NormalSpeed { get => normalSpeed; set => Set(ref normalSpeed, value); }
         private float normalSpeed = 1.2f;
