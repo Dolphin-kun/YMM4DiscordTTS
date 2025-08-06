@@ -9,4 +9,7 @@ YMM4内でDiscordの読み上げBotをホストします。
 [Wiki](https://github.com/Dolphin-kun/YMM4DiscordTTS/wiki)
 
 ## 更新履歴
-2025/08/06 v1.0.0　公開
+2025/08/06 
+  v1.0.1 修正
+    ツールを開いたときにエラーが出る問題を修正。
+  v1.0.0 公開
