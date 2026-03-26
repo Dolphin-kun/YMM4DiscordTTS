@@ -1,5 +1,10 @@
 # 「YMM4Discord読み上げ」プラグイン
 
+> [!Note]
+> このプラグインは「YMM4の機能」として少しズレているところがあり、誠に勝手ながら更新は行わないことといたしました。  
+> 申し訳ございません。
+
+
 ### [最新バージョンをダウンロード](https://github.com/Dolphin-kun/YMM4DiscordTTS/releases/latest)
 
 ## 概要
